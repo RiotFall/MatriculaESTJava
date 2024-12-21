@@ -1,0 +1,194 @@
+import javax.swing.*;
+
+public class MatriculaUniversidad {
+
+    // Clase Estudiante
+    static class Estudiante {
+        private String nombre;
+        private String codigo;
+        private int edad;
+
+        public Estudiante(String nombre, String codigo, int edad) {
+            this.nombre = nombre;
+            this.codigo = codigo;
+            this.edad = edad;
+        }
+
+        public String getNombre() { return nombre; }
+        public void setNombre(String nombre) { this.nombre = nombre; }
+
+        public String getCodigo() { return codigo; }
+        public void setCodigo(String codigo) { this.codigo = codigo; }
+
+        public int getEdad() { return edad; }
+        public void setEdad(int edad) { this.edad = edad; }
+
+        @Override
+        public String toString() {
+            return "Nombre: " + nombre + ", Código: " + codigo + ", Edad: " + edad;
+        }
+    }
+
+    // Clase Curso :D
+    static class Curso {
+        private String nombreCurso;
+        private String codigoCurso;
+        private int creditos;
+
+        public Curso(String nombreCurso, String codigoCurso, int creditos) {
+            this.nombreCurso = nombreCurso;
+            this.codigoCurso = codigoCurso;
+            this.creditos = creditos;
+        }
+
+        public String getNombreCurso() { return nombreCurso; }
+        public void setNombreCurso(String nombreCurso) { this.nombreCurso = nombreCurso; }
+
+        public String getCodigoCurso() { return codigoCurso; }
+        public void setCodigoCurso(String codigoCurso) { this.codigoCurso = codigoCurso; }
+
+        public int getCreditos() { return creditos; }
+        public void setCreditos(int creditos) { this.creditos = creditos; }
+
+        @Override
+        public String toString() {
+            return "Curso: " + nombreCurso + ", Código: " + codigoCurso + ", Créditos: " + creditos;
+        }
+    }
+
+    // Clase Matricula
+    static class Matricula {
+        private Estudiante estudiante;
+        private Curso curso;
+
+        public Matricula(Estudiante estudiante, Curso curso) {
+            this.estudiante = estudiante;
+            this.curso = curso;
+        }
+
+        public Estudiante getEstudiante() { return estudiante; }
+        public void setEstudiante(Estudiante estudiante) { this.estudiante = estudiante; }
+
+        public Curso getCurso() { return curso; }
+        public void setCurso(Curso curso) { this.curso = curso; }
+
+        @Override
+        public String toString() {
+            return "Matricula: " + estudiante.toString() + " - " + curso.toString();
+        }
+    }
+
+    private static final int MAX_ESTUDIANTES = 100;
+    private static final int MAX_CURSOS = 100;
+    private static final int MAX_MATRICULAS = 100;
+
+    private static Estudiante[] estudiantes = new Estudiante[MAX_ESTUDIANTES];
+    private static Curso[] cursos = new Curso[MAX_CURSOS];
+    private static Matricula[] matriculas = new Matricula[MAX_MATRICULAS];
+
+    private static int contadorEstudiantes = 0;
+    private static int contadorCursos = 0;
+    private static int contadorMatriculas = 0;
+
+    public static void main(String[] args) {
+        String[] opciones = {"Registrar Estudiante", "Registrar Curso", "Matricular", "Mostrar Datos", "Salir"};
+        int opcion;
+
+        do {
+            opcion = JOptionPane.showOptionDialog(null, "Seleccione una opción", "Sistema de Matrícula",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, opciones, opciones[0]);
+
+            switch (opcion) {
+                case 0 -> registrarEstudiante();
+                case 1 -> registrarCurso();
+                case 2 -> matricular();
+                case 3 -> mostrarDatos();
+            }
+        } while (opcion != 4);
+    }
+
+    private static void registrarEstudiante() {
+        if (contadorEstudiantes >= MAX_ESTUDIANTES) {
+            JOptionPane.showMessageDialog(null, "No se pueden registrar más estudiantes.");
+            return;
+        }
+
+        String nombre = JOptionPane.showInputDialog("Ingrese el nombre del estudiante:");
+        String codigo = JOptionPane.showInputDialog("Ingrese el código del estudiante:");
+        int edad = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la edad del estudiante:"));
+
+        estudiantes[contadorEstudiantes++] = new Estudiante(nombre, codigo, edad);
+        JOptionPane.showMessageDialog(null, "Estudiante registrado correctamente.");
+    }
+
+    private static void registrarCurso() {
+        if (contadorCursos >= MAX_CURSOS) {
+            JOptionPane.showMessageDialog(null, "No se pueden registrar más cursos.");
+            return;
+        }
+
+        String nombreCurso = JOptionPane.showInputDialog("Ingrese el nombre del curso:");
+        String codigoCurso = JOptionPane.showInputDialog("Ingrese el código del curso:");
+        int creditos = Integer.parseInt(JOptionPane.showInputDialog("Ingrese los créditos del curso:"));
+
+        cursos[contadorCursos++] = new Curso(nombreCurso, codigoCurso, creditos);
+        JOptionPane.showMessageDialog(null, "Curso registrado correctamente.");
+    }
+
+    private static void matricular() {
+        if (contadorMatriculas >= MAX_MATRICULAS) {
+            JOptionPane.showMessageDialog(null, "No se pueden realizar más matrículas.");
+            return;
+        }
+
+        String estudianteCodigo = JOptionPane.showInputDialog("Ingrese el código del estudiante:");
+        Estudiante estudiante = null;
+        for (int i = 0; i < contadorEstudiantes; i++) {
+            if (estudiantes[i].getCodigo().equals(estudianteCodigo)) {
+                estudiante = estudiantes[i];
+                break;
+            }
+        }
+
+        if (estudiante == null) {
+            JOptionPane.showMessageDialog(null, "Estudiante no encontrado.");
+            return;
+        }
+
+        String cursoCodigo = JOptionPane.showInputDialog("Ingrese el código del curso:");
+        Curso curso = null;
+        for (int i = 0; i < contadorCursos; i++) {
+            if (cursos[i].getCodigoCurso().equals(cursoCodigo)) {
+                curso = cursos[i];
+                break;
+            }
+        }
+
+        if (curso == null) {
+            JOptionPane.showMessageDialog(null, "Curso no encontrado.");
+            return;
+        }
+
+        matriculas[contadorMatriculas++] = new Matricula(estudiante, curso);
+        JOptionPane.showMessageDialog(null, "Matrícula realizada correctamente.");
+    }
+
+    private static void mostrarDatos() {
+        StringBuilder datos = new StringBuilder("Estudiantes:\n");
+        for (int i = 0; i < contadorEstudiantes; i++) {
+            datos.append(estudiantes[i].toString()).append("\n");
+        }
+
+        datos.append("\nCursos:\n");
+        for (int i = 0; i < contadorCursos; i++) {
+            datos.append(cursos[i].toString()).append("\n");
+        }
+
+        datos.append("\nMatrículas:\n");
+        for (int i = 0; i < contadorMatriculas; i++) {
+            datos.append(matriculas[i].toString()).append("\n");
+        }
+
+        JOptionPane.showMessageDialog(null, datos.toString());
+    }
+}
